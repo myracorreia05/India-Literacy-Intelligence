@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>India Literacy Intelligence | 2001-2011</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--surface:#161b22;--card:#1c2128;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--dim:#484f58;
+  --blue:#58a6ff;--green:#3fb950;--orange:#f78166;--yellow:#e3b341;
+  --purple:#bc8cff;--teal:#39d353;--red:#f85149;
+  --saffron:#ff7b39;--india-green:#138808;--navy:#000080;
+  --grad1:linear-gradient(135deg,#1f6feb,#388bfd);
+  --grad2:linear-gradient(135deg,#238636,#3fb950);
+  --grad3:linear-gradient(135deg,#9e6a03,#e3b341);
+  --grad4:linear-gradient(135deg,#da3633,#f85149);
+}
+html{font-size:14px;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.5}
+
+/* TOPBAR */
+#topbar{
+  height:56px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:200;
+}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{
+  width:32px;height:32px;background:linear-gradient(135deg,#ff7b39,#ffb347);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#000;
+}
+.tb-title{font-size:15px;font-weight:600;color:var(--text)}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-tabs{display:flex;gap:2px}
+.tab{
+  padding:7px 16px;font-size:12px;font-weight:500;cursor:pointer;
+  border:none;background:none;color:var(--muted);border-radius:6px;
+  transition:all 0.15s;font-family:inherit;
+}
+.tab:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.tab.on{background:rgba(88,166,255,0.15);color:var(--blue)}
+.tb-meta{font-size:11px;color:var(--dim);font-family:'Space Grotesk',sans-serif}
+
+/* LAYOUT */
+.page{display:none;padding:20px 24px 40px;max-width:1600px;margin:0 auto}
+.page.on{display:block}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.kpi{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;position:relative;overflow:hidden;cursor:default;
+  transition:border-color 0.2s,transform 0.15s;
+}
+.kpi:hover{border-color:var(--blue);transform:translateY(-1px)}
+.kpi-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.kpi-val{font-size:28px;font-weight:700;line-height:1;font-family:'Space Grotesk',sans-serif;color:var(--text)}
+.kpi-delta{font-size:12px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-delta.up{color:var(--green)} .kpi-delta.warn{color:var(--yellow)} .kpi-delta.neutral{color:var(--muted)}
+.kpi-sparkline{margin-top:10px}
+
+/* GRID LAYOUTS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-7-5{display:grid;grid-template-columns:7fr 5fr;gap:16px;margin-bottom:16px}
+.grid-5-7{display:grid;grid-template-columns:5fr 7fr;gap:16px;margin-bottom:16px}
+.grid-4-8{display:grid;grid-template-columns:4fr 8fr;gap:16px;margin-bottom:16px}
+.full{margin-bottom:16px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-header{
+  padding:14px 18px 0;display:flex;align-items:flex-start;justify-content:space-between;
+}
+.card-title{font-size:13px;font-weight:600;color:var(--text)}
+.card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.card-badge{
+  font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;
+  background:rgba(88,166,255,0.12);color:var(--blue);white-space:nowrap;
+}
+.card-badge.green{background:rgba(63,185,80,0.12);color:var(--green)}
+.card-badge.orange{background:rgba(247,129,102,0.12);color:var(--orange)}
+.card-badge.yellow{background:rgba(227,179,65,0.12);color:var(--yellow)}
+.card-body{padding:14px 18px 18px}
+
+/* CHART CONTAINERS */
+.chart-box{position:relative;width:100%}
+
+/* TREEMAP */
+#treemapSvg{width:100%;display:block}
+
+/* HEATMAP */
+.heatmap-grid{display:grid;gap:3px}
+.hm-cell{
+  border-radius:4px;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:8px 7px;cursor:pointer;
+  transition:opacity 0.15s,transform 0.15s;position:relative;
+  min-height:70px;
+}
+.hm-cell:hover{opacity:0.88;transform:scale(1.04);z-index:5}
+.hm-val{font-size:16px;font-weight:700;line-height:1;color:rgba(255,255,255,0.95)}
+.hm-name{font-size:9px;font-weight:600;color:rgba(255,255,255,0.6);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;line-height:1.2}
+.hm-delta{font-size:8px;color:rgba(255,255,255,0.4);margin-top:1px}
+
+/* BULLET CHART */
+.bullet-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bullet-label{font-size:11px;color:var(--muted);min-width:130px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bullet-track{flex:1;height:20px;background:rgba(255,255,255,0.04);position:relative;border-radius:2px;overflow:visible}
+.bullet-bg{position:absolute;top:4px;left:0;height:12px;border-radius:1px;background:rgba(255,255,255,0.06)}
+.bullet-bar{position:absolute;top:4px;left:0;height:12px;border-radius:1px;transition:width 1.4s cubic-bezier(0.23,1,0.32,1)}
+.bullet-target{position:absolute;top:2px;width:2px;height:16px;background:var(--text);border-radius:1px}
+.bullet-val{font-size:11px;color:var(--saffron);min-width:40px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* WAFFLE */
+.waffle{display:grid;grid-template-columns:repeat(10,1fr);gap:2px}
+.waffle-cell{aspect-ratio:1;border-radius:2px;transition:transform 0.1s}
+.waffle-cell:hover{transform:scale(1.3);z-index:5}
+
+/* SCATTER */
+#scatterCanvas{display:block;width:100%;cursor:crosshair}
+.scatter-tooltip{
+  position:absolute;background:rgba(22,27,34,0.96);border:1px solid var(--border);
+  padding:8px 12px;font-size:11px;color:var(--text);pointer-events:none;
+  display:none;white-space:nowrap;z-index:50;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* RANKING */
+.rank-item{
+  display:grid;grid-template-columns:28px 1fr auto;align-items:center;
+  gap:10px;padding:8px 0;border-bottom:1px solid rgba(48,54,61,0.5);
+}
+.rank-item:last-child{border-bottom:none}
+.rank-n{font-size:18px;font-weight:700;color:var(--dim);font-family:'Space Grotesk',sans-serif;text-align:center}
+.rank-n.top{color:var(--yellow)}
+.rank-info{min-width:0}
+.rank-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-bar-wrap{display:flex;align-items:center;gap:6px;margin-top:3px}
+.rank-track{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.rank-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.23,1,0.32,1)}
+.rank-pct{font-size:10px;color:var(--muted)}
+.rank-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* GAUGE */
+#gaugeCanvas{display:block;margin:0 auto}
+
+/* SLOPE */
+#slopeCanvas{display:block;width:100%}
+
+/* MAP-LIKE GRID */
+.india-grid{display:grid;gap:2px;margin-top:4px}
+.ig-cell{
+  border-radius:3px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;cursor:pointer;transition:all 0.15s;
+  aspect-ratio:1;
+}
+.ig-cell:hover{transform:scale(1.08);z-index:10;border-radius:6px}
+.ig-val{font-size:12px;font-weight:700;color:rgba(255,255,255,0.9)}
+.ig-name{font-size:7px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.4px;text-align:center;line-height:1.2;margin-top:1px}
+
+/* DATA TABLE */
+.dt-wrap{overflow-x:auto}
+.dt-ctrl{
+  display:flex;align-items:center;gap:10px;padding:12px 18px;
+  background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);
+}
+.dt-ctrl input{
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);
+  padding:6px 12px;font-size:12px;font-family:inherit;outline:none;border-radius:6px;width:200px;
+}
+.dt-ctrl input::placeholder{color:var(--dim)}
+.dt-ctrl input:focus{border-color:var(--blue)}
+.dt-sort-btns{display:flex;gap:4px}
+.dt-sb{
+  padding:5px 12px;font-size:10px;font-family:inherit;letter-spacing:0.5px;
+  cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);
+  border-radius:4px;transition:all 0.15s;text-transform:uppercase;
+}
+.dt-sb:hover,.dt-sb.on{background:var(--blue);color:#000;border-color:var(--blue);font-weight:600}
+table.dt{width:100%;border-collapse:collapse;min-width:700px}
+table.dt thead th{
+  padding:10px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);background:rgba(255,255,255,0.02);
+  border-bottom:1px solid var(--border);text-align:left;cursor:pointer;white-space:nowrap;
+}
+table.dt thead th:hover,table.dt thead th.sorted{color:var(--blue)}
+table.dt tbody tr{border-bottom:1px solid rgba(48,54,61,0.4);transition:background 0.1s}
+table.dt tbody tr:hover{background:rgba(255,255,255,0.025)}
+table.dt tbody td{padding:10px 14px;font-size:12px}
+.dt-name{font-weight:600}
+.dt-mono{font-variant-numeric:tabular-nums;font-size:12px}
+.dt-hi{color:var(--green);font-weight:600}
+.dt-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500}
+.dt-pill-hi{background:rgba(63,185,80,0.15);color:var(--green)}
+.dt-pill-md{background:rgba(227,179,65,0.15);color:var(--yellow)}
+.dt-pill-lo{background:rgba(255,255,255,0.05);color:var(--muted)}
+.dt-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
+.dt-tag-s{background:rgba(19,136,8,0.2);color:#7ee787}
+.dt-tag-u{background:rgba(0,0,128,0.3);color:#79c0ff}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:4px 0 16px}
+
+/* PANEL FILTER STRIP */
+.filter-strip{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.fs-btn{
+  padding:5px 12px;font-size:11px;font-family:inherit;cursor:pointer;
+  border:1px solid var(--border);background:none;color:var(--muted);border-radius:100px;
+  transition:all 0.15s;
+}
+.fs-btn:hover,.fs-btn.on{background:rgba(88,166,255,0.15);color:var(--blue);border-color:var(--blue)}
+
+/* TOOLTIP SHARED */
+.tooltip{
+  position:absolute;background:rgba(22,27,34,0.97);border:1px solid var(--border);
+  padding:8px 12px;font-size:11px;color:var(--text);pointer-events:none;
+  display:none;white-space:nowrap;z-index:50;border-radius:6px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+}
+.tooltip strong{display:block;font-size:12px;margin-bottom:4px;color:var(--saffron)}
+.tooltip span{display:block;color:var(--muted);margin-top:2px}
+
+/* ANIMATE */
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page.on{animation:fadeSlide 0.3s ease both}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--dim)}
+
+@media(max-width:1100px){
+  .kpi-row{grid-template-columns:repeat(3,1fr)}
+  .grid-2,.grid-3,.grid-7-5,.grid-5-7,.grid-4-8{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  #topbar{padding:0 14px}.tb-tabs{overflow-x:auto}
+  .kpi-row{grid-template-columns:1fr 1fr}.page{padding:14px 14px 40px}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">IN</div>
+    <div><div class="tb-title">India Literacy Intelligence</div><div class="tb-sub">Census 2001 — 2011 &nbsp;|&nbsp; 35 States & UTs</div></div>
+  </div>
+  <div class="tb-tabs">
+    <button class="tab on" onclick="goTab('overview',this)">Overview</button>
+    <button class="tab" onclick="goTab('explorer',this)">State Explorer</button>
+    <button class="tab" onclick="goTab('divide',this)">Rural vs Urban</button>
+    <button class="tab" onclick="goTab('growth',this)">Growth Analysis</button>
+    <button class="tab" onclick="goTab('data',this)">Data Table</button>
+  </div>
+  <div class="tb-meta">Last updated: Census 2011</div>
+</div>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="page on" id="p-overview">
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad1)"></div>
+      <div class="kpi-label">National Literacy 2011</div>
+      <div class="kpi-val" id="k1">73.0%</div>
+      <div class="kpi-delta up">&#9650; +8.2pp from 2001</div>
+    </div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad2)"></div>
+      <div class="kpi-label">Highest State</div>
+      <div class="kpi-val" style="font-size:22px;color:var(--green)">Kerala 94%</div>
+      <div class="kpi-delta up">&#9650; +3.1pp from 90.9%</div>
+    </div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad4)"></div>
+      <div class="kpi-label">Lowest State</div>
+      <div class="kpi-val" style="font-size:22px;color:var(--orange)">Bihar 61.8%</div>
+      <div class="kpi-delta up">&#9650; +14.8pp biggest leap</div>
+    </div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad3)"></div>
+      <div class="kpi-label">Urban–Rural Gap</div>
+      <div class="kpi-val">16.3pp</div>
+      <div class="kpi-delta warn">84.1% urban vs 67.8% rural</div>
+    </div>
+    <div class="kpi"><div class="kpi-accent" style="background:linear-gradient(135deg,#bc8cff,#79c0ff)"></div>
+      <div class="kpi-label">States Above 80%</div>
+      <div class="kpi-val">11 <span style="font-size:16px;color:var(--muted)">/ 35</span></div>
+      <div class="kpi-delta up">&#9650; Was 5 in 2001</div>
+    </div>
+  </div>
+
+  <div class="grid-7-5">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Literacy Treemap — 2011</div><div class="card-sub">Area proportional to value. Color = literacy tier</div></div>
+        <div class="card-badge">All 35 regions</div>
+      </div>
+      <div class="card-body" style="padding-top:10px">
+        <svg id="treemapSvg" height="340"></svg>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#388bfd"></div>90%+</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>80–90%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e3b341"></div>70–80%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f78166"></div>60–70%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f85149"></div>&lt;60%</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">National Gauge</div><div class="card-sub">2011 vs 2001 baseline</div></div>
+        <div class="card-badge green">+8.2pp</div>
+      </div>
+      <div class="card-body">
+        <canvas id="gaugeCanvas" width="300" height="180"></canvas>
+        <div style="margin-top:16px">
+          <div class="bullet-row"><span class="bullet-label">National</span>
+            <div class="bullet-track"><div class="bullet-bg" style="width:80%"></div><div class="bullet-bar" style="width:73%;background:var(--blue)"></div><div class="bullet-target" style="left:64.8%"></div></div>
+            <span class="bullet-val">73.0%</span>
+          </div>
+          <div class="bullet-row"><span class="bullet-label">Urban</span>
+            <div class="bullet-track"><div class="bullet-bg" style="width:90%"></div><div class="bullet-bar" style="width:84.1%;background:var(--purple)"></div><div class="bullet-target" style="left:79.9%"></div></div>
+            <span class="bullet-val">84.1%</span>
+          </div>
+          <div class="bullet-row"><span class="bullet-label">Rural</span>
+            <div class="bullet-track"><div class="bullet-bg" style="width:75%"></div><div class="bullet-bar" style="width:67.8%;background:var(--green)"></div><div class="bullet-target" style="left:58.7%"></div></div>
+            <span class="bullet-val">67.8%</span>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--dim);margin-top:10px">Thin marker = 2001 baseline &nbsp;|&nbsp; Filled bar = 2011</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Top 10 States — 2011</div><div class="card-sub">Ranked by total literacy</div></div><div class="card-badge green">Leaders</div></div>
+      <div class="card-body" id="top10rank"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Bottom 10 States</div><div class="card-sub">Ranked by total literacy</div></div><div class="card-badge orange">Needs attention</div></div>
+      <div class="card-body" id="bot10rank"></div>
+    </div>
+  </div>
+
+  <div class="card full">
+    <div class="card-header"><div><div class="card-title">Slope Chart — 2001 vs 2011</div><div class="card-sub">Each line = one state. Steeper slope = faster improvement</div></div><div class="card-badge">Trend comparison</div></div>
+    <div class="card-body" style="padding-top:8px"><canvas id="slopeCanvas" height="280"></canvas></div>
+  </div>
+
+</div>
+
+<!-- ═══ EXPLORER ═══ -->
+<div class="page" id="p-explorer">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad1)"></div><div class="kpi-label">States &gt; 80%</div><div class="kpi-val">11</div><div class="kpi-delta up">up from 5 in 2001</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad2)"></div><div class="kpi-label">Avg State Literacy</div><div class="kpi-val">75.3%</div><div class="kpi-delta up">&#9650; +8.6pp</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad3)"></div><div class="kpi-label">Avg UT Literacy</div><div class="kpi-val">85.7%</div><div class="kpi-delta up">&#9650; UTs lead states</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad4)"></div><div class="kpi-label">Median Literacy</div><div class="kpi-val">76.9%</div><div class="kpi-delta neutral">Manipur at median</div></div>
+  </div>
+
+  <div class="full card">
+    <div class="card-header">
+      <div><div class="card-title">Heat Map — All States &amp; UTs</div><div class="card-sub">Click any cell for detail. Color = 2011 literacy tier</div></div>
+      <div class="filter-strip" style="margin:0">
+        <button class="fs-btn on" onclick="filterHM('all',this)">All</button>
+        <button class="fs-btn" onclick="filterHM('S',this)">States only</button>
+        <button class="fs-btn" onclick="filterHM('U',this)">UTs only</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="heatmapGrid" class="heatmap-grid"></div>
+      <div id="hmTooltip" class="tooltip"></div>
+    </div>
+  </div>
+
+  <div class="grid-5-7">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Waffle Chart</div><div class="card-sub">Each square = 1% of literacy, filled = literate</div></div><div class="card-badge green">73% national</div></div>
+      <div class="card-body">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">100 squares = 100% population</div>
+        <div class="waffle" id="waffleGrid"></div>
+        <div class="legend" style="margin-top:14px">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Literate (73%)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Not yet (27%)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Bullet Chart — State vs National</div><div class="card-sub">Bar = 2011. Thin mark = 2001. Long bg = urban benchmark (84%)</div></div></div>
+      <div class="card-body" id="bulletChart" style="max-height:370px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DIVIDE ═══ -->
+<div class="page" id="p-divide">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad1)"></div><div class="kpi-label">National Urban</div><div class="kpi-val">84.1%</div><div class="kpi-delta up">&#9650; from 79.9%</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad2)"></div><div class="kpi-label">National Rural</div><div class="kpi-val">67.8%</div><div class="kpi-delta up">&#9650; from 58.7%</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad3)"></div><div class="kpi-label">Avg Gap (Urban–Rural)</div><div class="kpi-val">14.8pp</div><div class="kpi-delta warn">&#9660; narrowing slowly</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad4)"></div><div class="kpi-label">Worst Gap</div><div class="kpi-val" style="font-size:20px">Rajasthan 18.3pp</div><div class="kpi-delta warn">Most unequal</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Scatter Plot — Rural vs Urban 2011</div><div class="card-sub">Hover dots for details. Line = perfect equality</div></div></div>
+      <div class="card-body" style="padding-top:8px;position:relative">
+        <canvas id="scatterCanvas" height="320"></canvas>
+        <div id="scatterTip" class="tooltip"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Dumbbell Chart — Rural &amp; Urban 2011</div><div class="card-sub">Line length = gap. Sorted by urban value</div></div></div>
+      <div class="card-body" style="padding-top:8px"><canvas id="dumbbellCanvas" height="320"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Rural Literacy Ranking 2011</div><div class="card-sub">Best to worst rural access</div></div><div class="card-badge green">Rural focus</div></div>
+      <div class="card-body" id="ruralRank" style="max-height:300px;overflow-y:auto"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Gap Ranking — Largest Urban–Rural Divide</div><div class="card-sub">States with worst inequality</div></div><div class="card-badge orange">Disparity</div></div>
+      <div class="card-body" id="gapRank" style="max-height:300px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GROWTH ═══ -->
+<div class="page" id="p-growth">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad1)"></div><div class="kpi-label">Avg Decadal Growth</div><div class="kpi-val">8.7pp</div><div class="kpi-delta up">All states improved</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad2)"></div><div class="kpi-label">Max Growth</div><div class="kpi-val" style="font-size:20px">Bihar +14.8pp</div><div class="kpi-delta up">Biggest turnaround</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad3)"></div><div class="kpi-label">North-East Avg Growth</div><div class="kpi-val">12.1pp</div><div class="kpi-delta up">Fastest region</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad4)"></div><div class="kpi-label">Min Growth</div><div class="kpi-val" style="font-size:20px">Kerala +3.1pp</div><div class="kpi-delta neutral">Already near peak</div></div>
+  </div>
+
+  <div class="full card">
+    <div class="card-header"><div><div class="card-title">Diverging Bar Chart — Growth vs National Average</div><div class="card-sub">Orange = above avg. Blue = below avg. Dashed = national 8.2pp</div></div><div class="card-badge yellow">+8.2pp national avg</div></div>
+    <div class="card-body" style="padding-top:8px"><canvas id="divergingCanvas" height="420"></canvas></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Histogram — Distribution Shift</div><div class="card-sub">How many states fall in each literacy band</div></div></div>
+      <div class="card-body" style="padding-top:8px"><div class="chart-box" style="height:220px"><canvas id="histCanvas"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Bar Race — Growth Champions</div><div class="card-sub">Top 15 states by decadal improvement</div></div><div class="card-badge orange">Growth race</div></div>
+      <div class="card-body" style="padding-top:8px"><canvas id="growthBarCanvas" height="220"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DATA TABLE ═══ -->
+<div class="page" id="p-data">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad1)"></div><div class="kpi-label">Total Records</div><div class="kpi-val">35</div><div class="kpi-delta neutral">28 States + 7 UTs</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad2)"></div><div class="kpi-label">All Improved</div><div class="kpi-val">35/35</div><div class="kpi-delta up">100% growth rate</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad3)"></div><div class="kpi-label">Fields</div><div class="kpi-val">8</div><div class="kpi-delta neutral">Per state record</div></div>
+    <div class="kpi"><div class="kpi-accent" style="background:var(--grad4)"></div><div class="kpi-label">Avg Growth</div><div class="kpi-val">+8.7pp</div><div class="kpi-delta up">Decade average</div></div>
+  </div>
+  <div class="card full">
+    <div class="dt-ctrl">
+      <input type="text" id="dtSearch" placeholder="Filter states..." oninput="renderDT()"/>
+      <div class="dt-sort-btns">
+        <button class="dt-sb on" onclick="dtS(3,this)">2011 High</button>
+        <button class="dt-sb" onclick="dtS(7,this)">Growth High</button>
+        <button class="dt-sb" onclick="dtS(6,this)">Gap High</button>
+        <button class="dt-sb" onclick="dtS(0,this)">A-Z</button>
+      </div>
+    </div>
+    <div class="dt-wrap">
+      <table class="dt">
+        <thead><tr>
+          <th>#</th>
+          <th onclick="dtS2(0)">State / UT</th>
+          <th>Type</th>
+          <th onclick="dtS2(2)" class="sorted">2001</th>
+          <th onclick="dtS2(3)">2011</th>
+          <th onclick="dtS2(4)">Rural 2011</th>
+          <th onclick="dtS2(5)">Urban 2011</th>
+          <th onclick="dtS2(6)">U-R Gap</th>
+          <th onclick="dtS2(7)">Growth</th>
+        </tr></thead>
+        <tbody id="dtBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const D=[
+  {n:"Andhra Pradesh",c:"S",t01:60.5,t11:67.0,r11:60.4,u11:80.1},
+  {n:"Arunachal Pradesh",c:"S",t01:54.3,t11:65.4,r11:59.9,u11:82.9},
+  {n:"Assam",c:"S",t01:63.3,t11:72.2,r11:69.3,u11:88.5},
+  {n:"Bihar",c:"S",t01:47.0,t11:61.8,r11:59.8,u11:76.9},
+  {n:"Chhattisgarh",c:"S",t01:64.7,t11:70.3,r11:66.0,u11:84.0},
+  {n:"Goa",c:"S",t01:82.0,t11:88.7,r11:86.6,u11:90.0},
+  {n:"Gujarat",c:"S",t01:69.1,t11:78.0,r11:71.7,u11:86.3},
+  {n:"Haryana",c:"S",t01:67.9,t11:75.6,r11:71.4,u11:83.1},
+  {n:"Himachal Pradesh",c:"S",t01:76.5,t11:82.8,r11:81.9,u11:91.1},
+  {n:"Jammu & Kashmir",c:"S",t01:55.5,t11:67.2,r11:63.2,u11:77.1},
+  {n:"Jharkhand",c:"S",t01:53.6,t11:66.4,r11:61.1,u11:82.3},
+  {n:"Karnataka",c:"S",t01:66.6,t11:75.4,r11:68.7,u11:85.8},
+  {n:"Kerala",c:"S",t01:90.9,t11:94.0,r11:93.0,u11:95.1},
+  {n:"Madhya Pradesh",c:"S",t01:63.7,t11:69.3,r11:63.9,u11:82.8},
+  {n:"Maharashtra",c:"S",t01:76.9,t11:82.3,r11:77.0,u11:88.7},
+  {n:"Manipur",c:"S",t01:70.5,t11:76.9,r11:73.4,u11:85.4},
+  {n:"Meghalaya",c:"S",t01:62.6,t11:74.4,r11:69.9,u11:90.8},
+  {n:"Mizoram",c:"S",t01:88.8,t11:91.3,r11:84.1,u11:97.6},
+  {n:"Nagaland",c:"S",t01:66.6,t11:79.6,r11:75.3,u11:89.6},
+  {n:"Odisha",c:"S",t01:63.1,t11:72.9,r11:70.2,u11:85.7},
+  {n:"Punjab",c:"S",t01:69.7,t11:75.8,r11:71.4,u11:83.2},
+  {n:"Rajasthan",c:"S",t01:60.4,t11:66.1,r11:61.4,u11:79.7},
+  {n:"Sikkim",c:"S",t01:68.8,t11:81.4,r11:78.9,u11:88.7},
+  {n:"Tamil Nadu",c:"S",t01:73.5,t11:80.1,r11:73.5,u11:87.0},
+  {n:"Tripura",c:"S",t01:73.2,t11:87.2,r11:84.9,u11:93.5},
+  {n:"Uttar Pradesh",c:"S",t01:56.3,t11:67.7,r11:65.5,u11:75.1},
+  {n:"Uttarakhand",c:"S",t01:71.6,t11:78.8,r11:76.3,u11:84.5},
+  {n:"West Bengal",c:"S",t01:68.6,t11:76.3,r11:72.1,u11:84.8},
+  {n:"A & N Islands",c:"U",t01:81.3,t11:86.6,r11:84.5,u11:90.1},
+  {n:"Chandigarh",c:"U",t01:81.9,t11:86.0,r11:80.7,u11:86.2},
+  {n:"D & N Haveli",c:"U",t01:57.6,t11:76.2,r11:64.1,u11:89.8},
+  {n:"Daman & Diu",c:"U",t01:78.2,t11:87.1,r11:81.4,u11:89.0},
+  {n:"Lakshadweep",c:"U",t01:86.7,t11:91.8,r11:91.6,u11:91.9},
+  {n:"NCT of Delhi",c:"U",t01:81.7,t11:86.2,r11:81.9,u11:86.3},
+  {n:"Puducherry",c:"U",t01:81.2,t11:85.8,r11:80.1,u11:88.5},
+];
+D.forEach(d=>{d.g=+(d.t11-d.t01).toFixed(1);d.gap=+(d.u11-d.r11).toFixed(1)});
+
+function tierColor(v){
+  if(v>=90)return'#388bfd';
+  if(v>=80)return'#3fb950';
+  if(v>=70)return'#e3b341';
+  if(v>=60)return'#f78166';
+  return'#f85149';
+}
+
+/* TAB NAV */
+function goTab(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='explorer'&&!window._ex){buildExplorer();window._ex=true}
+  if(id==='divide'&&!window._dv){buildDivide();window._dv=true}
+  if(id==='growth'&&!window._gr){buildGrowth();window._gr=true}
+  if(id==='data'&&!window._dt){renderDT();window._dt=true}
+}
+
+/* CHART.JS DEFAULTS */
+Chart.defaults.color='#8b949e';
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.display=false;
+Chart.defaults.plugins.tooltip.backgroundColor='rgba(22,27,34,0.96)';
+Chart.defaults.plugins.tooltip.borderColor='#30363d';
+Chart.defaults.plugins.tooltip.borderWidth=1;
+Chart.defaults.plugins.tooltip.padding=10;
+Chart.defaults.plugins.tooltip.titleColor='#ff7b39';
+Chart.defaults.plugins.tooltip.bodyColor='#8b949e';
+
+const gridOpts={color:'rgba(48,54,61,0.5)',drawBorder:false};
+function gridCfg(){return{color:'rgba(48,54,61,0.5)',drawBorder:false}}
+
+/* ── TREEMAP (manual SVG squarified) ── */
+(function(){
+  const sorted=[...D].sort((a,b)=>b.t11-a.t11);
+  const svg=document.getElementById('treemapSvg');
+  const W=svg.parentElement.clientWidth-36||600;
+  const H=340;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+
+  function squarify(items,x,y,w,h){
+    if(!items.length)return[];
+    const total=items.reduce((s,d)=>s+d.t11,0);
+    const area=w*h;
+    let result=[];
+    let remaining=[...items];
+    while(remaining.length){
+      const rowItems=[];
+      let rowSum=0;
+      const shortSide=Math.min(w,h);
+      for(let i=0;i<remaining.length;i++){
+        rowItems.push(remaining[i]);
+        rowSum+=remaining[i].t11;
+        const rowArea=(rowSum/total)*area;
+        const rowAspect=rowItems.map(d=>{
+          const a=(d.t11/rowSum)*rowArea;
+          return Math.max(shortSide*shortSide/a,a/(shortSide*shortSide));
+        });
+        const maxAsp=Math.max(...rowAspect);
+        if(i>0){
+          const prevSum=rowSum-remaining[i].t11;
+          const prevArea=(prevSum/total)*area;
+          const prevAsp=rowItems.slice(0,-1).map(d=>{
+            const a=(d.t11/prevSum)*prevArea;
+            return Math.max(shortSide*shortSide/a,a/(shortSide*shortSide));
+          });
+          if(Math.max(...prevAsp)<maxAsp){rowItems.pop();rowSum-=remaining[i].t11;break}
+        }
+      }
+      remaining=remaining.slice(rowItems.length);
+      const rowArea=(rowSum/total)*area;
+      const isHoriz=w>=h;
+      const rowLen=isHoriz?rowArea/h:rowArea/w;
+      let pos=isHoriz?y:x;
+      rowItems.forEach(d=>{
+        const cellLen=isHoriz?((d.t11/rowSum)*h):((d.t11/rowSum)*w);
+        result.push({d,x:isHoriz?x:pos,y:isHoriz?pos:y,w:isHoriz?rowLen:cellLen,h:isHoriz?cellLen:rowLen});
+        pos+=cellLen;
+      });
+      if(isHoriz){x+=rowLen;w-=rowLen}else{y+=rowLen;h-=rowLen}
+      if(w<=0||h<=0)break;
+    }
+    return result;
+  }
+
+  const cells=squarify(sorted,2,2,W-4,H-4);
+  let html='';
+  cells.forEach(({d,x,y,w,h})=>{
+    const c=tierColor(d.t11);
+    const showLabel=w>40&&h>28;
+    const showVal=w>30&&h>20;
+    html+=`<g class="tm-cell" style="cursor:pointer" onmouseenter="showTM(evt,'${d.n}',${d.t11},${d.t01},${d.g})" onmouseleave="hideTM()">
+      <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(0,w-2).toFixed(1)}" height="${Math.max(0,h-2).toFixed(1)}" fill="${c}" opacity="0.82" rx="3"/>
+      ${showVal?`<text x="${(x+w/2).toFixed(1)}" y="${(y+h/2+(showLabel?-6:4)).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.95)" font-size="${Math.min(14,h*0.3).toFixed(0)}" font-weight="700" font-family="Space Grotesk,sans-serif">${d.t11}%</text>`:''}
+      ${showLabel?`<text x="${(x+w/2).toFixed(1)}" y="${(y+h/2+10).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.55)" font-size="${Math.min(10,h*0.18).toFixed(0)}" font-family="Inter,sans-serif">${d.n.split(' ')[0]}</text>`:''}
+    </g>`;
+  });
+  html+=`<rect id="tmHover" x="0" y="0" width="0" height="0" fill="none" stroke="white" stroke-width="2" rx="3" pointer-events="none"/>`;
+  html+=`<g id="tmTip" style="display:none"><rect x="0" y="0" width="180" height="64" fill="rgba(22,27,34,0.97)" stroke="#30363d" stroke-width="1" rx="6"/><text id="tmTipName" x="10" y="20" fill="#ff7b39" font-size="12" font-weight="600" font-family="Inter,sans-serif"></text><text id="tmTip1" x="10" y="38" fill="#8b949e" font-size="11" font-family="Inter,sans-serif"></text><text id="tmTip2" x="10" y="54" fill="#8b949e" font-size="11" font-family="Inter,sans-serif"></text></g>`;
+  svg.innerHTML=html;
+})();
+
+function showTM(evt,name,t11,t01,g){
+  const svg=document.getElementById('treemapSvg');
+  const r=svg.getBoundingClientRect();
+  const mx=evt.clientX-r.left,my=evt.clientY-r.top;
+  const tip=document.getElementById('tmTip');
+  const tx=Math.min(mx+10,r.width-185);
+  const ty=Math.min(my+10,r.height-70);
+  tip.setAttribute('transform',`translate(${tx},${ty})`);
+  tip.style.display='block';
+  document.getElementById('tmTipName').textContent=name;
+  document.getElementById('tmTip1').textContent='2011: '+t11+'%   |   2001: '+t01+'%';
+  document.getElementById('tmTip2').textContent='Growth: +'+g+' percentage points';
+}
+function hideTM(){document.getElementById('tmTip').style.display='none'}
+
+/* ── GAUGE ── */
+(function(){
+  const cv=document.getElementById('gaugeCanvas');
+  const ctx=cv.getContext('2d');
+  const W=300,H=180,cx=150,cy=160,r=120,inner=80;
+  cv.width=W;cv.height=H;
+
+  function drawArc(start,end,color,lineW){
+    ctx.beginPath();ctx.arc(cx,cy,r,start,end);
+    ctx.lineWidth=lineW||22;ctx.strokeStyle=color;ctx.lineCap='round';ctx.stroke();
+  }
+  const pi=Math.PI;
+  ctx.clearRect(0,0,W,H);
+  drawArc(pi,2*pi,'rgba(48,54,61,0.6)',22);
+  const zones=[[0,0.3,'#f85149'],[0.3,0.5,'#f78166'],[0.5,0.7,'#e3b341'],[0.7,0.85,'#3fb950'],[0.85,1,'#388bfd']];
+  zones.forEach(([s,e,c])=>drawArc(pi+s*pi,pi+e*pi,c,22));
+  const val=0.73,angle=pi+val*pi;
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(angle);
+  ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(inner-10,0);ctx.lineTo(0,8);ctx.closePath();
+  ctx.fillStyle='#fff';ctx.fill();ctx.restore();
+  ctx.beginPath();ctx.arc(cx,cy,10,0,2*pi);ctx.fillStyle='#1c2128';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,6,0,2*pi);ctx.fillStyle='#58a6ff';ctx.fill();
+  ctx.fillStyle='#e6edf3';ctx.font='bold 28px Space Grotesk,sans-serif';ctx.textAlign='center';
+  ctx.fillText('73%',cx,cy-22);
+  ctx.fillStyle='#8b949e';ctx.font='11px Inter,sans-serif';
+  ctx.fillText('National Literacy 2011',cx,cy-4);
+  ctx.fillStyle='#3fb950';ctx.font='12px Inter,sans-serif';
+  ctx.fillText('+8.2pp from 2001',cx,cy+14);
+})();
+
+/* ── RANK LISTS (overview) ── */
+function makeRankList(items,elId,colorFn,reverse){
+  const el=document.getElementById(elId);
+  el.innerHTML=items.map((d,i)=>`
+    <div class="rank-item">
+      <div class="rank-n ${i<3&&!reverse?'top':''}">${i+1}</div>
+      <div class="rank-info">
+        <div class="rank-name">${d.n}</div>
+        <div class="rank-bar-wrap">
+          <div class="rank-track"><div class="rank-fill" style="width:${(d.t11-40)*100/60}%;background:${colorFn(d.t11)}"></div></div>
+          <span class="rank-pct">${d.t01}% → ${d.t11}%</span>
+        </div>
+      </div>
+      <div class="rank-badge" style="background:${colorFn(d.t11)}22;color:${colorFn(d.t11)}">${d.t11}%</div>
+    </div>`).join('');
+}
+const bySorted=[...D].sort((a,b)=>b.t11-a.t11);
+makeRankList(bySorted.slice(0,10),'top10rank',tierColor,false);
+makeRankList([...bySorted].reverse().slice(0,10),'bot10rank',tierColor,true);
+
+/* ── SLOPE CHART ── */
+(function(){
+  const cv=document.getElementById('slopeCanvas');
+  const ctx=cv.getContext('2d');
+  const W=cv.width=cv.offsetWidth||900;cv.style.width='100%';
+  const H=280;cv.height=H;
+  const pad={l:80,r:80,t:20,b:30};
+  const x01=pad.l,x11=W-pad.r;
+  const toY=v=>pad.t+(100-v)/(100-40)*(H-pad.t-pad.b);
+
+  ctx.fillStyle='rgba(28,33,40,0.5)';ctx.fillRect(0,0,W,H);
+  [40,50,60,70,80,90,100].forEach(v=>{
+    const y=toY(v);
+    ctx.strokeStyle='rgba(48,54,61,0.4)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.l-10,y);ctx.lineTo(W-pad.r+10,y);ctx.stroke();
+    ctx.fillStyle='#484f58';ctx.font='10px Inter';ctx.textAlign='right';ctx.fillText(v+'%',pad.l-14,y+4);
+  });
+  ctx.fillStyle='#8b949e';ctx.font='11px Inter';ctx.textAlign='center';
+  ctx.fillText('2001',x01,H-8);ctx.fillText('2011',x11,H-8);
+
+  D.forEach(d=>{
+    const y01=toY(d.t01),y11=toY(d.t11);
+    const c=tierColor(d.t11);
+    const alpha=0.55;
+    ctx.strokeStyle=c.replace(')',`,${alpha})`).replace('rgb','rgba').replace('#','rgba(').replace('rgba(','rgba(')||c;
+    ctx.globalAlpha=0.5;ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.moveTo(x01,y01);ctx.lineTo(x11,y11);ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.fillStyle=c;
+    ctx.beginPath();ctx.arc(x01,y01,3,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(x11,y11,3,0,Math.PI*2);ctx.fill();
+    if(d.g>12||d.t11>90||d.n==='Bihar'||d.n==='Rajasthan'){
+      ctx.fillStyle='rgba(230,237,243,0.75)';ctx.font='9px Inter';
+      ctx.textAlign='left';ctx.fillText(d.n.split(' ')[0],x11+6,y11+3);
+      ctx.textAlign='right';ctx.fillText(d.n.split(' ')[0],x01-6,y01+3);
+    }
+  });
+})();
+
+/* ── EXPLORER ── */
+function buildExplorer(){
+  buildHeatmap('all');
+  buildWaffle();
+  buildBulletChart();
+}
+
+function buildHeatmap(filter){
+  let data=filter==='all'?D:D.filter(d=>d.c===filter);
+  const sorted=[...data].sort((a,b)=>b.t11-a.t11);
+  const cols=Math.ceil(Math.sqrt(sorted.length*1.4));
+  const grid=document.getElementById('heatmapGrid');
+  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  const tip=document.getElementById('hmTooltip');
+  grid.innerHTML=sorted.map(d=>`
+    <div class="hm-cell" style="background:${tierColor(d.t11)};opacity:0.85"
+      onmouseenter="showHMTip(event,'${d.n}',${d.t11},${d.t01},${d.r11},${d.u11},${d.g})"
+      onmouseleave="document.getElementById('hmTooltip').style.display='none'">
+      <div class="hm-val">${d.t11}%</div>
+      <div class="hm-name">${d.n.split(' ')[0]}</div>
+      <div class="hm-delta">+${d.g}pp</div>
+    </div>`).join('');
+}
+function showHMTip(e,name,t11,t01,r11,u11,g){
+  const tip=document.getElementById('hmTooltip');
+  tip.style.display='block';
+  tip.style.left=(e.offsetX+14)+'px';
+  tip.style.top=(e.offsetY+14)+'px';
+  tip.innerHTML=`<strong>${name}</strong>2011: ${t11}% &nbsp;|&nbsp; 2001: ${t01}%<span>Rural: ${r11}% &nbsp;|&nbsp; Urban: ${u11}%</span><span>Growth: +${g}pp</span>`;
+}
+window.filterHM=function(f,btn){
+  document.querySelectorAll('.fs-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');buildHeatmap(f);
+};
+
+function buildWaffle(){
+  const lit=73,total=100;
+  const cells=[];
+  for(let i=0;i<total;i++)cells.push(i<lit);
+  document.getElementById('waffleGrid').innerHTML=cells.map((f,i)=>`
+    <div class="waffle-cell" style="background:${f?'var(--blue)':'rgba(48,54,61,0.5)'}" title="${f?'Literate':'Not literate'}"></div>`).join('');
+}
+
+function buildBulletChart(){
+  const sorted=[...D].sort((a,b)=>b.t11-a.t11);
+  document.getElementById('bulletChart').innerHTML=sorted.map(d=>`
+    <div class="bullet-row">
+      <span class="bullet-label">${d.n.length>16?d.n.slice(0,15)+'...':d.n}</span>
+      <div class="bullet-track">
+        <div class="bullet-bg" style="width:84%"></div>
+        <div class="bullet-bar" style="width:${d.t11}%;background:${tierColor(d.t11)}aa"></div>
+        <div class="bullet-target" style="left:${d.t01}%"></div>
+      </div>
+      <span class="bullet-val">${d.t11}%</span>
+    </div>`).join('');
+}
+
+/* ── DIVIDE ── */
+function buildDivide(){
+  buildScatter();buildDumbbell();buildRuralRank();buildGapRank();
+}
+
+function buildScatter(){
+  const cv=document.getElementById('scatterCanvas');
+  const ctx=cv.getContext('2d');
+  const W=cv.width=cv.offsetParent?cv.offsetParent.clientWidth-36:500;
+  cv.style.width='100%';const H=cv.height=320;
+  const pad={l:44,r:20,t:16,b:36};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const toX=v=>pad.l+(v-55)/(100-55)*pw;
+  const toY=v=>pad.t+(100-v)/(100-60)*ph;
+
+  ctx.fillStyle='rgba(28,33,40,0.6)';ctx.fillRect(0,0,W,H);
+  [60,70,80,90,100].forEach(v=>{
+    ctx.strokeStyle='rgba(48,54,61,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
+    ctx.beginPath();ctx.moveTo(toX(v),pad.t);ctx.lineTo(toX(v),H-pad.b);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pad.l,toY(v));ctx.lineTo(W-pad.r,toY(v));ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#484f58';ctx.font='10px Inter';
+    ctx.textAlign='center';ctx.fillText(v+'%',toX(v),H-pad.b+13);
+    ctx.textAlign='right';ctx.fillText(v+'%',pad.l-4,toY(v)+4);
+  });
+  ctx.strokeStyle='rgba(88,166,255,0.15)';ctx.lineWidth=1;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(toX(60),toY(60));ctx.lineTo(toX(98),toY(98));ctx.stroke();
+  ctx.setLineDash([]);
+
+  const tipPts=[];
+  D.forEach(d=>{
+    const x=toX(d.r11),y=toY(d.u11);
+    tipPts.push({x,y,d});
+    ctx.beginPath();ctx.arc(x,y,d.c==='S'?5:7,0,Math.PI*2);
+    ctx.fillStyle=tierColor(d.t11);ctx.globalAlpha=0.82;ctx.fill();ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();
+    if(d.t11>88||d.g>13||d.n==='Bihar'||d.n==='Rajasthan'){
+      ctx.fillStyle='rgba(230,237,243,0.65)';ctx.font='9px Inter';ctx.textAlign='left';
+      ctx.fillText(d.n.split(' ')[0],x+7,y+3);
+    }
+  });
+  ctx.fillStyle='#484f58';ctx.font='10px Inter';ctx.textAlign='center';
+  ctx.fillText('Rural literacy 2011 (%)',W/2,H-4);
+
+  const tip=document.getElementById('scatterTip');
+  cv.addEventListener('mousemove',e=>{
+    const r=cv.getBoundingClientRect();
+    const sx=W/r.width,mx=(e.clientX-r.left)*sx,my=(e.clientY-r.top);
+    let best=null,bd=999;
+    tipPts.forEach(p=>{const d=Math.sqrt((p.x-mx)**2+(p.y-my)**2);if(d<bd){bd=d;best=p}});
+    if(best&&bd<16){
+      tip.style.display='block';tip.style.left=(e.clientX-r.left+12)+'px';tip.style.top=(e.clientY-r.top-36)+'px';
+      tip.innerHTML=`<strong>${best.d.n}</strong>Rural: ${best.d.r11}% &nbsp;|&nbsp; Urban: ${best.d.u11}%<span>Gap: ${best.d.gap}pp &nbsp;|&nbsp; Growth: +${best.d.g}pp</span>`;
+    } else tip.style.display='none';
+  });
+  cv.addEventListener('mouseleave',()=>tip.style.display='none');
+}
+
+function buildDumbbell(){
+  const cv=document.getElementById('dumbbellCanvas');
+  const ctx=cv.getContext('2d');
+  const W=cv.width=cv.offsetParent?cv.offsetParent.clientWidth-36:500;
+  cv.style.width='100%';const H=cv.height=320;
+  const sorted=[...D].sort((a,b)=>b.u11-a.u11).slice(0,18);
+  const pad={l:110,r:14,t:10,b:24};
+  const ph=H-pad.t-pad.b;
+  const rh=ph/sorted.length;
+  const toX=v=>pad.l+(v-55)/(100-55)*(W-pad.l-pad.r);
+
+  ctx.fillStyle='rgba(28,33,40,0.6)';ctx.fillRect(0,0,W,H);
+  [60,70,80,90,100].forEach(v=>{
+    ctx.strokeStyle='rgba(48,54,61,0.35)';ctx.lineWidth=1;ctx.setLineDash([2,4]);
+    ctx.beginPath();ctx.moveTo(toX(v),pad.t);ctx.lineTo(toX(v),H-pad.b);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#484f58';ctx.font='9px Inter';ctx.textAlign='center';
+    ctx.fillText(v+'%',toX(v),H-pad.b+13);
+  });
+  sorted.forEach((d,i)=>{
+    const y=pad.t+i*rh+rh/2;
+    const xR=toX(d.r11),xU=toX(d.u11);
+    ctx.strokeStyle='rgba(88,166,255,0.25)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(xR,y);ctx.lineTo(xU,y);ctx.stroke();
+    ctx.beginPath();ctx.arc(xR,y,4,0,Math.PI*2);ctx.fillStyle='#3fb950';ctx.fill();
+    ctx.beginPath();ctx.arc(xU,y,4,0,Math.PI*2);ctx.fillStyle='#bc8cff';ctx.fill();
+    ctx.fillStyle='#8b949e';ctx.font='9px Inter';ctx.textAlign='right';
+    ctx.fillText(d.n.length>13?d.n.slice(0,12)+'...':d.n,pad.l-6,y+3);
+  });
+  ctx.fillStyle='#3fb950';ctx.font='10px Inter';ctx.textAlign='left';ctx.fillText('Rural',toX(60),H-6);
+  ctx.fillStyle='#bc8cff';ctx.fillText('Urban',toX(75),H-6);
+}
+
+function buildRuralRank(){
+  const sorted=[...D].sort((a,b)=>b.r11-a.r11).slice(0,12);
+  document.getElementById('ruralRank').innerHTML=sorted.map((d,i)=>`
+    <div class="rank-item">
+      <div class="rank-n ${i<3?'top':''}">${i+1}</div>
+      <div class="rank-info"><div class="rank-name">${d.n}</div>
+        <div class="rank-bar-wrap"><div class="rank-track"><div class="rank-fill" style="width:${(d.r11-40)*100/60}%;background:#3fb950"></div></div>
+        <span class="rank-pct">${d.r11}%</span></div></div>
+      <div class="rank-badge" style="background:rgba(63,185,80,0.12);color:#3fb950">${d.r11}%</div>
+    </div>`).join('');
+}
+
+function buildGapRank(){
+  const sorted=[...D].sort((a,b)=>b.gap-a.gap).slice(0,12);
+  document.getElementById('gapRank').innerHTML=sorted.map((d,i)=>`
+    <div class="rank-item">
+      <div class="rank-n ${i<3?'top':''}">${i+1}</div>
+      <div class="rank-info"><div class="rank-name">${d.n}</div>
+        <div class="rank-bar-wrap"><div class="rank-track"><div class="rank-fill" style="width:${(d.gap/25)*100}%;background:#f78166"></div></div>
+        <span class="rank-pct">${d.gap}pp</span></div></div>
+      <div class="rank-badge" style="background:rgba(247,129,102,0.12);color:#f78166">${d.gap}pp</div>
+    </div>`).join('');
+}
+
+/* ── GROWTH ── */
+function buildGrowth(){
+  buildDiverging();buildHist();buildGrowthBar();
+}
+
+function buildDiverging(){
+  const natAvg=8.2;
+  const sorted=[...D].sort((a,b)=>b.g-a.g);
+  new Chart(document.getElementById('divergingCanvas'),{
+    type:'bar',
+    data:{
+      labels:sorted.map(d=>d.n.length>14?d.n.slice(0,13)+'...':d.n),
+      datasets:[{
+        data:sorted.map(d=>+(d.g-natAvg).toFixed(1)),
+        backgroundColor:sorted.map(d=>d.g>=natAvg?'rgba(63,185,80,0.75)':'rgba(88,166,255,0.65)'),
+        borderColor:sorted.map(d=>d.g>=natAvg?'#3fb950':'#58a6ff'),
+        borderWidth:1,borderRadius:3,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        tooltip:{callbacks:{label:c=>`${c.raw>0?'+':''}${c.raw}pp vs national avg`}},
+        annotation:{annotations:{line:{type:'line',yMin:0,yMax:0,borderColor:'rgba(255,255,255,0.3)',borderWidth:1,borderDash:[4,4]}}}
+      },
+      scales:{
+        x:{grid:gridCfg(),ticks:{maxRotation:60,font:{size:9}}},
+        y:{grid:gridCfg(),ticks:{callback:v=>(v>0?'+':'')+v+'pp'}}
+      }
+    }
+  });
+}
+
+function buildHist(){
+  const bins=[[40,50],[50,60],[60,70],[70,80],[80,90],[90,100]];
+  const c01=bins.map(([a,b])=>D.filter(d=>d.t01>=a&&d.t01<b).length);
+  const c11=bins.map(([a,b])=>D.filter(d=>d.t11>=a&&d.t11<b).length);
+  new Chart(document.getElementById('histCanvas'),{
+    type:'bar',
+    data:{
+      labels:bins.map(([a,b])=>a+'-'+b+'%'),
+      datasets:[
+        {label:'2001',data:c01,backgroundColor:'rgba(227,179,65,0.5)',borderColor:'#e3b341',borderWidth:1,borderRadius:3},
+        {label:'2011',data:c11,backgroundColor:'rgba(63,185,80,0.55)',borderColor:'#3fb950',borderWidth:1,borderRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{boxWidth:10,padding:14,color:'#8b949e'}}},
+      scales:{x:{grid:gridCfg()},y:{grid:gridCfg(),ticks:{stepSize:1}}}
+    }
+  });
+}
+
+function buildGrowthBar(){
+  const sorted=[...D].sort((a,b)=>b.g-a.g).slice(0,15);
+  new Chart(document.getElementById('growthBarCanvas'),{
+    type:'bar',
+    data:{
+      labels:sorted.map(d=>d.n.split(' ')[0]),
+      datasets:[{
+        data:sorted.map(d=>d.g),
+        backgroundColor:sorted.map(d=>d.g>12?'rgba(63,185,80,0.8)':d.g>8?'rgba(88,166,255,0.7)':'rgba(227,179,65,0.7)'),
+        borderRadius:4,borderWidth:0,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:c=>'+'+c.raw+'pp'}}},
+      scales:{
+        x:{grid:{display:false},ticks:{maxRotation:45,font:{size:9}}},
+        y:{grid:gridCfg(),ticks:{callback:v=>'+'+v}}
+      }
+    }
+  });
+}
+
+/* ── DATA TABLE ── */
+let dtCol=3,dtAsc=false;
+function renderDT(){
+  if(!window._dt){window._dt=true}
+  const q=(document.getElementById('dtSearch').value||'').toLowerCase();
+  let rows=D.filter(d=>d.n.toLowerCase().includes(q));
+  const keys=[d=>d.n,d=>d.c,d=>d.t01,d=>d.t11,d=>d.r11,d=>d.u11,d=>d.gap,d=>d.g];
+  rows.sort((a,b)=>{const va=keys[dtCol](a),vb=keys[dtCol](b);return typeof va==='string'?(dtAsc?va.localeCompare(vb):vb.localeCompare(va)):(dtAsc?va-vb:vb-va)});
+  document.getElementById('dtBody').innerHTML=rows.map((d,i)=>{
+    const pc=d.g>12?'dt-pill-hi':d.g>8?'dt-pill-md':'dt-pill-lo';
+    return`<tr>
+      <td style="color:var(--dim);font-size:13px;font-weight:600">${i+1}</td>
+      <td class="dt-name">${d.n}</td>
+      <td><span class="dt-tag ${d.c==='S'?'dt-tag-s':'dt-tag-u'}">${d.c==='S'?'State':'UT'}</span></td>
+      <td class="dt-mono">${d.t01}%</td><td class="dt-hi">${d.t11}%</td>
+      <td class="dt-mono">${d.r11}%</td><td class="dt-mono">${d.u11}%</td>
+      <td class="dt-mono">${d.gap}pp</td>
+      <td><span class="dt-pill ${pc}">+${d.g}pp</span></td>
+    </tr>`;
+  }).join('');
+  document.querySelectorAll('table.dt thead th').forEach((th,i)=>th.classList.toggle('sorted',i===dtCol+2));
+}
+function dtS(col,btn){if(dtCol===col)dtAsc=!dtAsc;else{dtCol=col;dtAsc=false};document.querySelectorAll('.dt-sb').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderDT()}
+function dtS2(col){if(dtCol===col)dtAsc=!dtAsc;else{dtCol=col;dtAsc=false};renderDT()}
+renderDT();
+</script>
+</body>
+</html>
